@@ -9,6 +9,8 @@
 #include <stddef.h>
 #include <stivale2.h>
 
+typedef struct stivale2_struct STIVALE2_STRUCT;
+
 // uint8_t = unsigned char
 // allocating stack as an array in .bss
 static uint8_t stack[8192]; 
@@ -46,7 +48,7 @@ static struct stivale2_header_tag_framebuffer framebuffer_hdr_tag = {
 // for the bootloader to find it.
 __attribute__((section(.stivale2hdr), used))
 static struct stivale2_header stivale_hdr {
-    // entry point of kernel. If 0 Elf entry point will be used.
+    // entry point of kernel. If 0 - ELF entry point will be used.
     .entry = 0,
 
     // uintptr_t = unsigned integer pointer which has same size of pointer
@@ -60,3 +62,51 @@ static struct stivale2_header stivale_hdr {
     .next = (uintptr_t)&framebuffer_hdr_tag // pointer to previous header tag (framebuffer_hdr_tag)
 };
 
+// Helper function than will help scan for tags
+// that we want from the bootloader (structure tags)
+// https://github.com/stivale/stivale/blob/master/STIVALE2.md#stivale2-structure
+void *stivale2_get_tag(STIVALE2_STRUCT *stivale2_struct, uint64_t id) {
+    struct stivale2_tag *current_tag = (void *)stivale2_struct->tags;
+    for(;;) {
+        // if tag pointer is NULL (end of linkedlist)
+        // return NULL
+        if (current_tag == NULL) {
+            return NULL;
+        }
+
+        // check if identifier matches to id
+        // return pointer to the matching tag
+        if (current_tag->identifier == id) {
+            return current_tag;
+        }
+
+        // get a pointer to the next linked list and repeat
+        current_tag = (void *)current_tag->next;
+    }
+}
+
+// Kernel entry point
+void _start(STIVALE2_STRUCT *stivale2_struct) {
+    // get terminal structure tag from bootloader
+    struct stivale2_struct_tag_terminal *term_struct_tag;
+    term_struct_tag = stivale2_get_tag(stivale2_struct, STIVALE2_STRUCT_TAG_TERMINAL_ID);
+
+    // check if tag was found
+    if (term_struct_tag == NULL) {
+        for(;;) {
+            asm("hlt");
+        }
+    }
+
+    // get address of terminal write function
+    void *term_write_ptr = (void *)term_str_tag->term_write;
+    
+    // size_t = unsigned type used to represent size of object.
+    void (*term_write)(const char *string, size_t length) = term_write_ptr;
+
+    term_write("Lilith is God", 11);
+
+    for(;;) {
+        asm("hlt");
+    }
+}
