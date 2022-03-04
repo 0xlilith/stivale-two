@@ -24,8 +24,8 @@ static struct stivale2_header_tag_terminal terminal_hdr_tag = {
         .identifier = STIVALE2_HEADER_TAG_TERMINAL_ID,
         .next = 0, // end of linkedlist of header tag
     },
-    .flags = 0,
-}
+    .flags = 0
+};
 
 /* 
  * FRAME BUFFEER HEADER TAG
@@ -33,20 +33,20 @@ static struct stivale2_header_tag_terminal terminal_hdr_tag = {
 */
 static struct stivale2_header_tag_framebuffer framebuffer_hdr_tag = {
     .tag = {
-        .identifier = STIVALE2_HEADER_TAG_TERMINAL_ID;
+        .identifier = STIVALE2_HEADER_TAG_TERMINAL_ID,
         
         // uint64_t = unsigned long long
-        .next = (uint64_t)&terminal_hdr_tag; // pointer to previous header tag (terminal_hdr_tag)
+        .next = (uint64_t)&terminal_hdr_tag // pointer to previous header tag (terminal_hdr_tag)
     },
     .framebuffer_width  = 0,
     .framebuffer_height = 0,
     .framebuffer_bpp    = 0
-}
+};
 
 // __attribute__ allows you to specify special properties of variables, function parameters, or structure, union
 // This "header structure" structure needs to reside in the .stivale2hdr ELF section in order
 // for the bootloader to find it.
-__attribute__((section(.stivale2hdr), used))
+__attribute__((section(".stivale2hdr"), used))
 static struct stivale2_header stivale_hdr {
     // entry point of kernel. If 0 - ELF entry point will be used.
     .entry = 0,
@@ -88,11 +88,11 @@ void *stivale2_get_tag(STIVALE2_STRUCT *stivale2_struct, uint64_t id) {
 // Kernel entry point
 void _start(STIVALE2_STRUCT *stivale2_struct) {
     // get terminal structure tag from bootloader
-    struct stivale2_struct_tag_terminal *term_struct_tag;
-    term_struct_tag = stivale2_get_tag(stivale2_struct, STIVALE2_STRUCT_TAG_TERMINAL_ID);
+    struct stivale2_struct_tag_terminal *term_str_tag;
+    term_str_tag = stivale2_get_tag(stivale2_struct, STIVALE2_STRUCT_TAG_TERMINAL_ID);
 
     // check if tag was found
-    if (term_struct_tag == NULL) {
+    if (term_str_tag == NULL) {
         for(;;) {
             asm("hlt");
         }
