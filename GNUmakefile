@@ -1,4 +1,4 @@
-
+// Kernel name
 override KERNEL := myos.elf
 
 ifeq ($(origin CC), default)
