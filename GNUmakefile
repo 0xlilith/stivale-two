@@ -1,18 +1,27 @@
-// Kernel name
+# This is the name that our final kernel executable will have.
+# Change as needed.
 override KERNEL := myos.elf
-
+ 
+# It is highly recommended to use a custom built cross toolchain to build a kernel.
+# We are only using "cc" as a placeholder here. It may work by using
+# the host system's toolchain, but this is not guaranteed.
 ifeq ($(origin CC), default)
 CC := cc
 endif
-
+ 
+# Likewise, "ld" here is just a placeholder and your mileage may vary if using the
+# host's "ld".
 ifeq ($(origin LD), default)
 LD := ld
 endif
  
+# User controllable CFLAGS.
 CFLAGS ?= -O2 -g -Wall -Wextra -pipe
  
+# User controllable linker flags. We set none by default.
 LDFLAGS ?=
-
+ 
+# Internal C flags that should not be changed by the user.
 override INTERNALCFLAGS :=   \
 	-I.                  \
 	-std=gnu11           \
