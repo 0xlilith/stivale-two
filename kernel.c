@@ -104,7 +104,7 @@ void _start(STIVALE2_STRUCT *stivale2_struct) {
     // size_t = unsigned type used to represent size of object.
     void (*term_write)(const char *string, size_t length) = term_write_ptr;
 
-    term_write("Lilith is God", 11);
+    term_write("Lilith is God", 13);
 
     for(;;) {
         asm("hlt");

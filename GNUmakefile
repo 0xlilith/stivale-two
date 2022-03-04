@@ -1,6 +1,6 @@
 # This is the name that our final kernel executable will have.
 # Change as needed.
-override KERNEL := myos.elf
+override KERNEL := lillyos.elf
  
 # It is highly recommended to use a custom built cross toolchain to build a kernel.
 # We are only using "cc" as a placeholder here. It may work by using
