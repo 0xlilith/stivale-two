@@ -24,7 +24,7 @@ static struct stivale2_header_tag_terminal terminal_hdr_tag = {
         .identifier = STIVALE2_HEADER_TAG_TERMINAL_ID,
         .next = 0, // end of linkedlist of header tag
     },
-    .flag = 0;
+    .flags = 0,
 }
 
 /* 
