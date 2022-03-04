@@ -47,19 +47,19 @@ static struct stivale2_header_tag_framebuffer framebuffer_hdr_tag = {
 // This "header structure" structure needs to reside in the .stivale2hdr ELF section in order
 // for the bootloader to find it.
 __attribute__((section(".stivale2hdr"), used))
-static struct stivale2_header stivale_hdr {
+static struct stivale2_header stivale_hdr = {
     // entry point of kernel. If 0 - ELF entry point will be used.
-    .entry = 0,
+    .entry_point = 0,
 
     // uintptr_t = unsigned integer pointer which has same size of pointer
     // stack address (esp/rsp). 
-    .stack = (uintptr_t)stack + sizeof(tack), 
+    .stack = (uintptr_t)stack + sizeof(stack), 
 
     // https://github.com/stivale/stivale/blob/master/STIVALE2.md#stivale2-header for flags
-    .flag = (1 << 1) | (1 << 2) | (1 << 3) | (1 << 4),
+    .flags = (1 << 1) | (1 << 2) | (1 << 3) | (1 << 4),
 
     // this header structure is root of the linkedlist of header tags
-    .next = (uintptr_t)&framebuffer_hdr_tag // pointer to previous header tag (framebuffer_hdr_tag)
+    .tags = (uintptr_t)&framebuffer_hdr_tag // pointer to first header in linked list (framebuffer_hdr_tag)
 };
 
 // Helper function than will help scan for tags
